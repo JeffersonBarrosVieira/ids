@@ -143,14 +143,11 @@ function draw(){
     }
 
     // Lógica Trajetória
-    if(rotacionar){
-        electron.directionRotate(dtheta);
-    }
-
     if(mover){
         electron.vMod = 0;
     } else {
         electron.vMod = 0.9*c;
+        electron.directionRotate(dtheta);
     }
         
     // Fim lógica Trajetória
@@ -165,8 +162,8 @@ function mousePressed(){
     dx = electron.position.x - mouseX;
     dy = electron.position.y - mouseY;
 
-    mouseButton == LEFT ? mover = !mover : 0
-    mouseButton == RIGHT ? rotacionar = !rotacionar : 0
+    mouseButton == RIGHT ? mover = !mover : 0
+    // mouseButton == RIGHT ? rotacionar = !rotacionar : 0
 }
 
 function mouseDragged(){
