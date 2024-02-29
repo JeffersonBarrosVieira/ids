@@ -56,7 +56,6 @@ class Matrix{
         //         ellipse(this.ondas[i][j].x, this.ondas[i][j].y, 1, 1);
         //     }
         // }
-        if(this.ondas.length > 2)
         for(let i = 0; i < this.ondas.length - 1; i++){
             for(let j = 0; j < this.ondas[i].length; j++){
                 line(this.ondas[i][j].x, this.ondas[i][j].y, this.ondas[i + 1][j].x, this.ondas[i+1][j].y)
@@ -77,9 +76,10 @@ class Matrix{
 let electron;
 let dx;
 let dy;
-let dt = 0.01;
+let dt = 0.00000001;
 let t = 0;
-let v = 50;
+let c = 299792458;
+let freq = 1E6;
 
 let x = []
 
@@ -90,7 +90,7 @@ function setup(){
     canvas1.parent('canvas1')
     
     electron = new Electron({
-        x: width/2 - 300,
+        x: width/2,
         y: height/2,
         v: 0,
         theta: 0
@@ -120,30 +120,31 @@ function draw(){
     t += 1;
     
 
-    if(t%(1*10) == 0){
+    if(t%(2) == 0){
         P.createPoints(electron.position)
-        P.verifyRadius(800)
+        P.verifyRadius(700)
     }
 
-    if(t > 500 && t < 1500){
-        if(electron.position.x > width/2 - 200 && electron.position.x < width/2 + 10){
-            electron.velocity = createVector(v*0.90,v*sin(2*PI*t*dt))
-        } else {
-            electron.velocity = createVector(v*0.98,0)
-        }
+    // if(t > 0 && t < 500){
+    //     if(electron.position.x > width/2 - 200 && electron.position.x < width/2 + 10){
+    //         electron.velocity = createVector(0,c*sin(2*PI*t*dt))
+    //     } else {
+    //         electron.velocity = createVector(c*0.5,0)
+    //     }
 
-    } else {
-        // electron.velocity = createVector(v*0.98,0)
-        electron.velocity = createVector(0,0)
-    }
-    // electron.velocity = createVector(0,v*sin(2*PI*t*dt))
+    // } else {
+    //     // electron.velocity = createVector(v*0.98,0)
+    //     electron.velocity = createVector(0,c*sin(2*PI*t*dt))
+    // }
+
+    electron.velocity = createVector(0,c*0.2*sin(2*PI*t*dt*freq))
 
  
     
     P.display();
     electron.display();
     electron.update(dt)
-    P.update(v, dt)
+    P.update(c, dt)
 }
 
 function mousePressed(){
