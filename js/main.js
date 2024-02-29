@@ -56,7 +56,7 @@ class Matrix{
         //         ellipse(this.ondas[i][j].x, this.ondas[i][j].y, 1, 1);
         //     }
         // }
-        // if(this.ondas.length > 2)
+        if(this.ondas.length > 2)
         for(let i = 0; i < this.ondas.length - 1; i++){
             for(let j = 0; j < this.ondas[i].length; j++){
                 line(this.ondas[i][j].x, this.ondas[i][j].y, this.ondas[i + 1][j].x, this.ondas[i+1][j].y)
@@ -86,7 +86,8 @@ let x = []
 let P;
 
 function setup(){
-    createCanvas(800,400);
+    var canvas1 = createCanvas(800,400);
+    canvas1.parent('canvas1')
     
     electron = new Electron({
         x: width/2 - 300,
