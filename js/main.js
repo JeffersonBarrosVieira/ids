@@ -4,8 +4,9 @@ document.addEventListener('contextmenu', event => {
 
 class Electron{
     constructor(info){
-        this.position = createVector(info.x, info.y);
-        this.velocity = createVector(info.v*cos(info.theta),info.v*sin(info.theta))
+        this.position = createVector(info.x0, info.y0);
+        this.direction = createVector(cos(info.theta0*(PI/180)), -sin(info.theta0*(PI/180)))
+        this.velocity = createVector(info.v0*this.direction.x,info.v0*this.direction.y)
         this.raio = 5;
     }
     display(){
@@ -13,8 +14,18 @@ class Electron{
         fill(0, 0, 255);
         ellipse(this.position.x, this.position.y, 2*this.raio, 2*this.raio);
     }
-    update(dt){
+    update(dt){ 
+        let v = mag(this.velocity.x, this.velocity.y)
+        this.velocity.x = v * this.direction.x
+        this.velocity.y = v * this.direction.y
         this.position.add(createVector(this.velocity.x * dt, this.velocity.y * dt))
+    }
+    directionRotate(theta){
+        let dirX0 = this.direction.x
+        let dirY0 = this.direction.y
+        this.direction.x = dirX0* cos(theta) + dirY0* sin(theta);
+        this.direction.y = -dirX0* sin(theta) + dirY0* cos(theta);
+
     }
 } 
 
@@ -79,24 +90,25 @@ class Matrix{
 let electron;
 let dx;
 let dy;
-let dt = 0.00000001;
-let t = 0;
+let dt = 1E-8;
 let c = 299792458;
 let freq = 2E6;
+let T = 0
 
 let x = []
 
 let P;
+
 
 function setup(){
     var canvas1 = createCanvas(800,400);
     canvas1.parent('canvas1')
     
     electron = new Electron({
-        x: width/2,
-        y: height/2,
-        v: 0,
-        theta: 0
+        x0: width/2,
+        y0: height/2,
+        v0: 0.9*c,
+        theta0: 0
     });
     P = new Matrix(
         L = 1000,
@@ -106,41 +118,42 @@ function setup(){
         y0 = electron.position.y,
         dt = dt
     )
-    P.createPoints(electron.position)
+    P.createPoints(electron.position);
 }
 
 function draw(){
     background(240);
     
-    
-
     if(electron.position.dist(createVector(mouseX, mouseY)) < electron.raio){
         overElectron = true
     } else {
         overElectron = false
     }
 
-    t += 1;
+    T += 1;
     
 
-    if(t%(2) == 0){
+    if(T%(2) == 0){
         P.createPoints(electron.position)
         P.verifyRadius(700)
     }
 
-    electron.position.add(createVector(0,1*sin(2*PI*t*dt*freq)))
+    // Lógica Trajetória
+    electron.directionRotate((PI/180)*2);
+        
+    // Fim lógica Trajetória
     
     P.display();
     electron.display();
-    electron.update(dt)
     P.update(c, dt)
+    electron.update(dt)
 }
 
 function mousePressed(){
     dx = electron.position.x - mouseX;
     dy = electron.position.y - mouseY;
 
-    mouseButton == RIGHT ? freq = 0 : 0
+    mouseButton == RIGHT ? electron.velocity = createVector(0,0) : 0
 }
 
 function mouseDragged(){
