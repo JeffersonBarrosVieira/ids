@@ -5,6 +5,7 @@ document.addEventListener('contextmenu', event => {
 class Electron{
     constructor(info){
         this.position = createVector(info.x0, info.y0);
+        this.vMod = info.v0;
         this.direction = createVector(cos(info.theta0*(PI/180)), -sin(info.theta0*(PI/180)))
         this.velocity = createVector(info.v0*this.direction.x,info.v0*this.direction.y)
         this.raio = 5;
@@ -15,9 +16,8 @@ class Electron{
         ellipse(this.position.x, this.position.y, 2*this.raio, 2*this.raio);
     }
     update(dt){ 
-        let v = mag(this.velocity.x, this.velocity.y)
-        this.velocity.x = v * this.direction.x
-        this.velocity.y = v * this.direction.y
+        this.velocity.x = this.vMod * this.direction.x
+        this.velocity.y = this.vMod * this.direction.y
         this.position.add(createVector(this.velocity.x * dt, this.velocity.y * dt))
     }
     directionRotate(theta){
@@ -91,18 +91,22 @@ let electron;
 let dx;
 let dy;
 let dt = 1E-8;
+let dtheta = (Math.PI/180)*2
 let c = 299792458;
 let freq = 2E6;
 let T = 0
 
-let x = []
+let mover = true;
+let rotacionar = false;
+
+let x = [];
 
 let P;
 
 
 function setup(){
     var canvas1 = createCanvas(800,400);
-    canvas1.parent('canvas1')
+    canvas1.parent('canvas1');
     
     electron = new Electron({
         x0: width/2,
@@ -139,7 +143,15 @@ function draw(){
     }
 
     // Lógica Trajetória
-    electron.directionRotate((PI/180)*2);
+    if(rotacionar){
+        electron.directionRotate(dtheta);
+    }
+
+    if(mover){
+        electron.vMod = 0;
+    } else {
+        electron.vMod = 0.9*c;
+    }
         
     // Fim lógica Trajetória
     
@@ -153,8 +165,8 @@ function mousePressed(){
     dx = electron.position.x - mouseX;
     dy = electron.position.y - mouseY;
 
-    mouseButton == RIGHT ? electron.velocity = createVector(0,0) : 0
-    mouseButton == CENTER ? electron.velocity = createVector(0.9*c,0) : 0
+    mouseButton == LEFT ? mover = !mover : 0
+    mouseButton == RIGHT ? rotacionar = !rotacionar : 0
 }
 
 function mouseDragged(){
