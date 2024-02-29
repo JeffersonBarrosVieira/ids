@@ -1,3 +1,6 @@
+document.addEventListener('contextmenu', event => {
+    event.preventDefault();
+  });
 
 class Electron{
     constructor(info){
@@ -79,7 +82,7 @@ let dy;
 let dt = 0.00000001;
 let t = 0;
 let c = 299792458;
-let freq = 1E6;
+let freq = 2E6;
 
 let x = []
 
@@ -125,21 +128,7 @@ function draw(){
         P.verifyRadius(700)
     }
 
-    // if(t > 0 && t < 500){
-    //     if(electron.position.x > width/2 - 200 && electron.position.x < width/2 + 10){
-    //         electron.velocity = createVector(0,c*sin(2*PI*t*dt))
-    //     } else {
-    //         electron.velocity = createVector(c*0.5,0)
-    //     }
-
-    // } else {
-    //     // electron.velocity = createVector(v*0.98,0)
-    //     electron.velocity = createVector(0,c*sin(2*PI*t*dt))
-    // }
-
-    electron.velocity = createVector(0,c*0.2*sin(2*PI*t*dt*freq))
-
- 
+    electron.position.add(createVector(0,1*sin(2*PI*t*dt*freq)))
     
     P.display();
     electron.display();
@@ -150,6 +139,8 @@ function draw(){
 function mousePressed(){
     dx = electron.position.x - mouseX;
     dy = electron.position.y - mouseY;
+
+    mouseButton == RIGHT ? freq = 0 : 0
 }
 
 function mouseDragged(){
