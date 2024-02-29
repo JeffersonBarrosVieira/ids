@@ -154,6 +154,7 @@ function mousePressed(){
     dy = electron.position.y - mouseY;
 
     mouseButton == RIGHT ? electron.velocity = createVector(0,0) : 0
+    mouseButton == CENTER ? electron.velocity = createVector(0.9*c,0) : 0
 }
 
 function mouseDragged(){
