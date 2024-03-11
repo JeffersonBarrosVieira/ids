@@ -116,7 +116,7 @@ function setup(){
     });
     P = new Matrix(
         L = 1000,
-        np = 100,
+        np = 80,
         nl = 40,
         x0 = electron.position.x,
         y0 = electron.position.y,
@@ -146,8 +146,8 @@ function draw(){
     if(mover){
         electron.vMod = 0;
     } else {
-        electron.vMod = 0.9*c;
-        electron.directionRotate(dtheta);
+        electron.vMod = 0.6*c*sin(2*PI*T*dt*4E6);
+        // electron.directionRotate(dtheta);
     }
         
     // Fim lógica Trajetória
