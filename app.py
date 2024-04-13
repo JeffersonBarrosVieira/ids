@@ -1,4 +1,6 @@
 from flask import Flask, render_template
+import numpy as np
+
 app = Flask(__name__)
 
 @app.route("/")
@@ -7,7 +9,7 @@ def index():
 
 @app.route("/about")
 def home():
-    return "HELLO about"
+    return f"HELLO about 1 + 1 = {np.abs(1+1)}"
 
 if __name__ == '__main__':
     app.run(debug=True)
