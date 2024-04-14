@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6;
+            display: flex;
+        }
+        #sidebar {
+            background-color: #2c3e50;
+            color: #fff;
+            width: 250px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        header {
+            background-color: #34495e;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            width: calc(100% - 250px);
+            box-sizing: border-box;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        nav ul li {
+            margin-bottom: 10px;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        nav ul li a:hover {
+            color: #ff8c00;
+        }
+        section {
+            padding: 20px;
+            width: calc(100% - 250px);
+            box-sizing: border-box;
+        }
+        .container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .box {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            padding: 20px;
+            width: 600px; /* Alterado para deixar o gráfico maior */
+            transition: transform 0.3s ease-in-out;
+        }
+        .box:hover {
+            transform: translateY(-5px);
+        }
+        .box h2 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        .box p {
+            color: #7f8c8d;
+        }
+        .box .icon {
+            font-size: 24px; /* Reduzindo o tamanho do ícone */
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+        .modebar-container .modebar-group .plotlyjsicon {
+           display: none !important;
+       }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <header>
+            <h1>Dashboard</h1>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="#"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                <li><a href="#"><i class="fas fa-file-alt"></i> Reports</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+        </nav>
+    </div>
+    <section>
+        <header>
+            <h2>Dashboard Overview</h2>
+        </header>
+        <div class="container">
+            <div class="box">
+                <h2>Density Surface Plot</h2>
+                <div id="densityPlot"></div>
+            </div>
+            <div class="box">
+                <h2>Projection on XY Plane</h2>
+                <div id="projectionPlot"></div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Dados para o gráfico de superfície de densidade com distribuição gaussiana
+        var xValues = linspace(-1, 1, 100);
+        var yValues = linspace(-1, 1, 100);
+        var zValues = [];
+
+        var A = 1
+        var sigma = 0.5
+
+        for (var i = 0; i < xValues.length; i++) {
+            zValues.push([]);
+            for (var j = 0; j < yValues.length; j++) {
+                var x = xValues[i];
+                var y = yValues[j];
+                var density = A* Math.exp(-(x**2 + y**2) / sigma);
+                zValues[i].push(density);
+            }
+        }
+        
+        var traceDensity = {
+            x: xValues,
+            y: yValues,
+            z: zValues,
+            type: 'surface',
+            colorscale: 'Viridis',
+            contours: {
+                z: {
+                    show: true,
+                    usecolormap: true,
+                    highlightcolor: "#42f5c5",
+                    project: {z: true}
+                }
+            }
+        };
+        var dataDensity = [traceDensity];
+        var layoutDensity = {
+            title: 'Density Surface Plot',
+            autosize: false,
+            width: 600,
+            height: 500
+        };
+        Plotly.newPlot('densityPlot', dataDensity, layoutDensity);
+
+        // Projeção no plano XY
+        var traceProjection = {
+            x: xValues,
+            y: yValues,
+            z: zValues,
+            // type: 'contour',
+            type: 'heatmap',
+            colorscale: 'Viridis'
+        };
+        var dataProjection = [traceProjection];
+        var layoutProjection = {
+            title: 'Projection on XY Plane',
+            xaxis: {
+                title: 'X',
+            },
+            yaxis: {
+                title: 'Y',
+            },
+            autosize: false,
+            width: 600,
+            height: 500
+        };
+        Plotly.newPlot('projectionPlot', dataProjection, layoutProjection);
+
+        // Função auxiliar para gerar um array de valores entre start e stop
+        function linspace(start, stop, num) {
+            var step = (stop - start) / (num - 1);
+            return Array.from({ length: num }, (_, i) => start + (step * i));
+        }
+    </script>
+</body>
+</html>

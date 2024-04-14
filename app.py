@@ -28,5 +28,14 @@ def get_tasks():
     print(soma)
     return jsonify(soma)
 
+@app.route('/dashboard', methods=['GET'])
+def dashboard():
+    return render_template('dashboard.html')
+
+@app.route('/dashboard1', methods=['GET'])
+def dashboard1():
+    return render_template('dashboard1.html')
+
+
 if __name__ == '__main__':
     app.run(debug=True)

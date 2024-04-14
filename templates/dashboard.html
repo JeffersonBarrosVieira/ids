@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6;
+            display: flex;
+        }
+        #sidebar {
+            background-color: #2c3e50;
+            color: #fff;
+            width: 250px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        header {
+            background-color: #34495e;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            width: calc(100% - 250px);
+            box-sizing: border-box;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        nav ul li {
+            margin-bottom: 10px;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        nav ul li a:hover {
+            color: #ff8c00;
+        }
+        section {
+            padding: 20px;
+            width: calc(100% - 250px);
+            box-sizing: border-box;
+        }
+        .container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .box {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            padding: 20px;
+            width: 600px; /* Alterado para deixar o gráfico maior */
+            transition: transform 0.3s ease-in-out;
+        }
+        .box:hover {
+            transform: translateY(-5px);
+        }
+        .box h2 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        .box p {
+            color: #7f8c8d;
+        }
+        .box .icon {
+            font-size: 24px; /* Reduzindo o tamanho do ícone */
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+        .modebar-container .modebar-group .plotlyjsicon {
+           display: none !important;
+       }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <header>
+            <h1>Dashboard</h1>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="#"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                <li><a href="#"><i class="fas fa-file-alt"></i> Reports</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+        </nav>
+    </div>
+    <section>
+        <header>
+            <h2>Dashboard Overview</h2>
+        </header>
+        <div class="container">
+            <div class="box">
+                <h2>Projectile Trajectory</h2>
+                <div id="trajectoryPlot"></div>
+            </div>
+            <div class="box">
+                <h2>Wave Function for Harmonic Oscillator</h2>
+                <div id="waveFunctionPlot"></div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Gráfico da trajetória de um projétil
+        var theta = Math.PI / 4; // Ângulo de lançamento (45 graus)
+        var g = 9.81; // Aceleração devido à gravidade (m/s^2)
+        var v0 = 10; // Velocidade inicial (m/s)
+        var tValues = linspace(0, 2 * v0 * Math.sin(theta) / g, 100);
+        var xValues = tValues.map(t => v0 * Math.cos(theta) * t);
+        var yValues = tValues.map(t => v0 * Math.sin(theta) * t - 0.5 * g * t * t);
+
+        var traceTrajectory = {
+            x: xValues,
+            y: yValues,
+            mode: 'lines',
+            line: {
+                color: '#3498db'
+            }
+        };
+        var dataTrajectory = [traceTrajectory];
+        var layoutTrajectory = {
+            title: 'Projectile Trajectory',
+            xaxis: {
+                title: 'Horizontal Distance (m)',
+            },
+            yaxis: {
+                title: 'Vertical Distance (m)',
+            },
+            autosize: false,
+            width: 600,
+            height: 500
+        };
+        Plotly.newPlot('trajectoryPlot', dataTrajectory, layoutTrajectory);
+
+        // Gráfico da função de onda para o oscilador harmônico
+        var xValuesHO = linspace(-5, 5, 100);
+        var psiValues = xValuesHO.map(x => Math.exp(-x * x));
+
+        var traceWaveFunction = {
+            x: xValuesHO,
+            y: psiValues,
+            type: 'scatter',
+            mode: 'lines',
+            line: {
+                color: '#e74c3c'
+            }
+        };
+        var dataWaveFunction = [traceWaveFunction];
+        var layoutWaveFunction = {
+            title: 'Wave Function for Harmonic Oscillator',
+            xaxis: {
+                title: 'Position (x)',
+            },
+            yaxis: {
+                title: 'Wave Function (Ψ)',
+            },
+            autosize: false,
+            width: 600,
+            height: 500
+        };
+        Plotly.newPlot('waveFunctionPlot', dataWaveFunction, layoutWaveFunction);
+
+        // Função auxiliar para gerar um array de valores entre start e stop
+        function linspace(start, stop, num) {
+            var step = (stop - start) / (num - 1);
+            return Array.from({ length: num }, (_, i) => start + (step * i));
+        }
+    </script>
+</body>
+</html>
