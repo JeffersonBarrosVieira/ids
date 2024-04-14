@@ -13,11 +13,11 @@
         }
     ],
     "functions": {
-        "api/calc.py": {
-          "maxDuration": 30
+        "static/js/main.js": {
+          "maxDuration": 5
         },
         "api/*.py": {
-          "maxDuration": 15
+          "maxDuration": 5
         }
       }
 }
