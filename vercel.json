@@ -11,5 +11,13 @@
             "src":"/(.*)",
             "dest":"app.py"
         }
-    ]
+    ],
+    "functions": {
+        "api/calc.py": {
+          "maxDuration": 30
+        },
+        "api/*.py": {
+          "maxDuration": 15
+        }
+      }
 }
